@@ -3,8 +3,8 @@ import clarifyai
 
 
 # App title
-st.set_page_config(page_title="DR.DOC",page_icon="🩺")
-
+st.set_page_config(page_title="GPT 4",page_icon="🤖")
+st.title("CHAT GPT 4")
 # Store LLM generated responses
 if "messages" not in st.session_state.keys():
     st.session_state.messages = [{"role": "assistant", "content": "Vanakam🙏"}]
