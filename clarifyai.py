@@ -1,14 +1,14 @@
-
+import streamlit as st
 ######################################################################################################
 # In this section, we set the user authentication, user and app ID, model details, and the URL of 
 # the text we want as an input. Change these strings to run your own example.
 ######################################################################################################
 
-PAT = 'f04fba59cd2344ac862ecbd0c6a16da5'
+PAT = st.secrets.PAT
 # Specify the correct user_id/app_id pairings
 # Since you're making inferences outside your app's scope
-USER_ID = 'ganesh_16'
-APP_ID = 'gpt4'
+USER_ID = st.secrets.USER_ID
+APP_ID = st.secrets.APP_ID
 # Change these to whatever model and text URL you want to use
 WORKFLOW_ID = 'workflow-70a33c'
 TEXT_FILE_URL = 'https://samples.clarifai.com/negative_sentence_12.txt'
