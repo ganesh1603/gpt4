@@ -62,6 +62,7 @@ def get_response(prompt):
         print("Predicted concepts for the model `%s`" % model.id)
         for concept in output.data.concepts:
             print("	%s %.2f" % (concept.name, concept.value))
+        response += output.data.text.raw + "\n"
     print(response)
 
     return response
