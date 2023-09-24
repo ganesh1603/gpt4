@@ -4,7 +4,12 @@ import clarifyai
 
 # App title
 st.set_page_config(page_title="GPT 4",page_icon="🤖")
-st.title("CHAT GPT 4")
+with st.sidebar:
+    st.title("CHAT GPT 4")
+    st.write("To get the code of this chat bot.")
+    st.markdown("https://github.com/ganesh1603/gpt4.git")
+
+
 # Store LLM generated responses
 if "messages" not in st.session_state.keys():
     st.session_state.messages = [{"role": "assistant", "content": "Vanakam🙏"}]
