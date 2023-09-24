@@ -2,7 +2,12 @@
 # In this section, we set the user authentication, user and app ID, model details, and the URL of 
 # the text we want as an input. Change these strings to run your own example.
 ######################################################################################################
+
+from clarifai_grpc.channel.clarifai_channel import ClarifaiChannel
+from clarifai_grpc.grpc.api import resources_pb2, service_pb2, service_pb2_grpc
+from clarifai_grpc.grpc.api.status import status_code_pb2
 import streamlit as st
+
 # Your PAT (Personal Access Token) can be found in the portal under Authentification
 PAT = st.secrets.PAT
 # Specify the correct user_id/app_id pairings
@@ -17,9 +22,6 @@ TEXT_FILE_URL = 'https://samples.clarifai.com/negative_sentence_12.txt'
 # YOU DO NOT NEED TO CHANGE ANYTHING BELOW THIS LINE TO RUN THIS EXAMPLE
 ############################################################################
 
-from clarifai_grpc.channel.clarifai_channel import ClarifaiChannel
-from clarifai_grpc.grpc.api import resources_pb2, service_pb2, service_pb2_grpc
-from clarifai_grpc.grpc.api.status import status_code_pb2
 def get_response(prompt):
     channel = ClarifaiChannel.get_grpc_channel()
     stub = service_pb2_grpc.V2Stub(channel)
@@ -27,6 +29,8 @@ def get_response(prompt):
     metadata = (('authorization', 'Key ' + PAT),)
 
     userDataObject = resources_pb2.UserAppIDSet(user_id=USER_ID, app_id=APP_ID)
+
+    response = ""  # save response from the model
 
     post_workflow_results_response = stub.PostWorkflowResults(
         service_pb2.PostWorkflowResultsRequest(
@@ -36,7 +40,7 @@ def get_response(prompt):
                 resources_pb2.Input(
                     data=resources_pb2.Data(
                         text=resources_pb2.Text(
-                            url=TEXT_FILE_URL
+                            raw=prompt
                         )
                     )
                 )
@@ -44,9 +48,11 @@ def get_response(prompt):
         ),
         metadata=metadata
     )
+
     if post_workflow_results_response.status.code != status_code_pb2.SUCCESS:
         print(post_workflow_results_response.status)
-        raise Exception("Post workflow results failed, status: " + post_workflow_results_response.status.description)
+
+        return response
 
     # We'll get one WorkflowResult for each input we used above. Because of one input, we have here one WorkflowResult
     results = post_workflow_results_response.results[0]
@@ -58,9 +64,11 @@ def get_response(prompt):
         print("Predicted concepts for the model `%s`" % model.id)
         for concept in output.data.concepts:
             print("	%s %.2f" % (concept.name, concept.value))
+
         response += output.data.text.raw + "\n"
+
+    # Uncomment this line to print the full Response JSON
+    # print(results)
     print(response)
 
     return response
-
-
